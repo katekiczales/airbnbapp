@@ -1,0 +1,16 @@
+[
+    {
+        "user_id": 1,
+        "name": "Francis",
+        "group_size": 2,
+        "preferred_environment": "Vancouver",
+        "budget": 250
+    },
+    {
+        "user_id": 2,
+        "name": "Kate",
+        "group_size": 4,
+        "preferred_environment": "Whistler",
+        "budget": 400
+    }
+]

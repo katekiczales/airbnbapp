@@ -1,0 +1,56 @@
+[
+  {
+    "property_id": "P001",
+    "location": "Muskoka, ON",
+    "type": "cabin",
+    "nightly_price": 180,
+    "features": ["wifi", "firepit", "canoe"],
+    "tags": ["lake", "remote"],
+    "capacity": 4
+  },
+  {
+    "property_id": "P002",
+    "location": "Tofino, BC",
+    "type": "house",
+    "nightly_price": 260,
+    "features": ["wifi", "hot_tub", "ocean_view"],
+    "tags": ["beach", "surf"],
+    "capacity": 6
+  },
+  {
+    "property_id": "P003",
+    "location": "Canmore, AB",
+    "type": "condo",
+    "nightly_price": 150,
+    "features": ["wifi", "parking"],
+    "tags": ["mountain", "city"],
+    "capacity": 2
+  },
+  {
+    "property_id": "P004",
+    "location": "Kelowna, BC",
+    "type": "house",
+    "nightly_price": 220,
+    "features": ["wifi", "bbq", "pool"],
+    "tags": ["lake", "family-friendly"],
+    "capacity": 5
+  },
+  {
+    "property_id": "P005",
+    "location": "Downtown Toronto, ON",
+    "type": "apartment",
+    "nightly_price": 190,
+    "features": ["wifi", "gym", "ac"],
+    "tags": ["city", "nightlife"],
+    "capacity": 3
+  },
+  {
+    "property_id": "P006",
+    "location": "Whistler, BC",
+    "type": "townhouse",
+    "nightly_price": 275,
+    "features": ["wifi", "ski_in_out", "fireplace"],
+    "tags": ["mountain", "ski"],
+    "capacity": 6
+  }
+]

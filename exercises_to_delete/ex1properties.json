@@ -1,0 +1,30 @@
+[
+    {
+        "property_id": 1,
+        "location": "Vancouver",
+        "type": "Condo",
+        "price_per_night": 200,
+        "features": [
+            "WiFi",
+            "Kitchen"
+        ],
+        "tags": [
+            "city",
+            "modern"
+        ]
+    },
+    {
+        "property_id": 2,
+        "location": "Whistler",
+        "type": "Cabin",
+        "price_per_night": 350,
+        "features": [
+            "Fireplace",
+            "Hot Tub"
+        ],
+        "tags": [
+            "mountain",
+            "ski"
+        ]
+    }
+]
