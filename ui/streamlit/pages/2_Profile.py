@@ -35,10 +35,10 @@ def _iso_or_none(d: dt.date | None):
 # Prefill values
 pref_env_val = user.preferred_env or ""
 group_size_val = user.group_size if user.group_size is not None else 0
-bmin_val = int(user.budget_min) if user.budget_min is not None else 0
-bmax_val = int(user.budget_max) if user.budget_max is not None else 0
-tstart_val = _to_date(user.travel_start)
-tend_val = _to_date(user.travel_end)
+budget_min = int(user.budget_min) if user.budget_min is not None else 0
+budget_max = int(user.budget_max) if user.budget_max is not None else 0
+travel_start_date = _to_date(user.travel_start)
+travel_end_date = _to_date(user.travel_end)
 
 st.divider()
 st.subheader("Edit profile")
@@ -63,15 +63,15 @@ with st.form("profile_form", clear_on_submit=False):
     with col1:
         group_size = st.number_input("Group size", min_value=0, max_value=50, value=group_size_val, step=1)
     with col2:
-        bmin = st.number_input("Budget min", min_value=0, max_value=10000, value=bmin_val, step=10)
+        bmin = st.number_input("Budget min", min_value=0, max_value=10000, value=budget_min, step=10)
     with col3:
-        bmax = st.number_input("Budget max", min_value=0, max_value=10000, value=max(bmax_val, bmin_val), step=10)
+        bmax = st.number_input("Budget max", min_value=0, max_value=10000, value=max(budget_max, budget_min), step=10)
 
     cold1, cold2 = st.columns(2)
     with cold1:
-        tstart = st.date_input("Travel start (optional)", value=tstart_val)
+        tstart = st.date_input("Travel start (optional)", value=travel_start_date)
     with cold2:
-        tend = st.date_input("Travel end (optional)", value=tend_val)
+        tend = st.date_input("Travel end (optional)", value=travel_end_date)
 
     submitted = st.form_submit_button("Save changes")
     if submitted:
