@@ -3,10 +3,6 @@ import uuid, copy
 from pathlib import Path
 from dataclasses import dataclass, asdict
 
-# High-level design:
-# - Owns the users record and JSON I/O for users
-# - Knows nothing about hashing algorithms or sessions, does not write the hash, just stores it for a given user
-
 # Path to the users data
 DATA_PATH = Path(__file__).parent / "data" / "users.json"
 
@@ -15,21 +11,29 @@ USER_FIELDS = {
     "budget_min", "budget_max", "travel_start", "travel_end"
 }
 
-# ----- User Data -----
-# Only id, email, and name are required upfront, the others can be added later on.
-# id: str
-# email: str
-# first_name: str
-# last_name: str
-# group_size: int | None
-# preferred_env: str | None
-# budget_min: int | None
-# budget_max: int | None
-# travel_start: str | None
-# travel_end: str | None
+"""
+Handles all user logic. Owns the users record and JSON I/O for users.
+Has no knowledge of hashing algorithms or sessions. Just stores the hash for a given user.
+"""
 
 @dataclass
 class User:
+    """Stored user record for auth and recommendations.
+
+    Attributes:
+        id: Stable UUID string.
+        email: The user's email. Used as login identifier (unique).
+        first_name: The user's first name.
+        last_name: The user's last name.
+        group_size: The user's group size.
+        preferred_env: The preferred environment for the user.
+        budget_min: Nightly min budget in dollars.
+        budget_max: Nightly max budget in dollars.
+        travel_start: The user's travel start date.
+        travel_end: The user's travel end date.
+        password_hash: The user's password hash.
+    """
+
     id: str
     email: str
     first_name: str
@@ -46,40 +50,70 @@ class User:
 # HELPER FUNCTIONS (for internal use)
 # ======================================================================================================================
 
-# Load users data from the json file as a list of dictionaries
 def _load_all() -> list[dict]:
+    """
+    Load all users data from the users.json file
+
+    :return: data for all users
+    """
     users =  json.loads(DATA_PATH.read_text(encoding="utf-8"))
     return users
 
-# Save users data to the json file
 def _save_all(rows: list[dict]) -> None:
+    """
+    Save all users data to the users.json file
+
+    :param rows: the data to be saved
+    :return: None
+    """
     DATA_PATH.write_text(json.dumps(rows, indent=2), encoding="utf-8")
 
 # ======================================================================================================================
 # API-STYLE FUNCTIONS (for internal and external use)
 # ======================================================================================================================
 
-# Convert users into User objects and return them
 def list_users() -> list[User]:
+    """
+    Convert all JSON users into a list of user objects
+
+    :return: a list of user objects
+    """
     return [User(**row) for row in _load_all()]
 
-# Return an existing user by id; if that user does not exist, return nothing
 def get_user_by_id(user_id: str) -> User | None:
+    """
+    Get a user by ID
+
+    :param user_id: the user's id
+    :return: the user if found, None otherwise
+    """
     for row in _load_all():
         if row["id"] == user_id:
             return User(**row)
     return None
 
-# Return an existing user by email; if that user does not exist, return nothing
 def get_user_by_email(email: str) -> User | None:
+    """
+    Get a user by email
+    :param email: the user's email
+    :return: the user if found, None otherwise
+    """
     for row in _load_all():
         if row["email"] == email:
             return User(**row)
     return None
 
-# Create and return a new user
 def create_user(*, email: str, first_name: str, last_name: str, **optional_fields) -> User:
-    # Create a new user object with a randomly generated (but unique) id
+    """
+    Create a new user
+    :param email: the user's email
+    :param first_name: the user's first name
+    :param last_name: the user's last name
+    :param optional_fields: fields representing the user's preferences (optional at time of signup)
+    :return: the new user
+    """
+
+    # Assign the user a randomly generated (but random) id
     user = User(
         id=str(uuid.uuid4()),
         email=email,
@@ -93,8 +127,13 @@ def create_user(*, email: str, first_name: str, last_name: str, **optional_field
     _save_all(rows)
     return user
 
-# Update all given fields for the user
 def update_user(user_id: str, **fields) -> User:
+    """
+    Update a user with the given fields (some of them may be changed)
+    :param user_id: the users id
+    :param fields: fields a user is able to update through the UI
+    :return: the updated user
+    """
     rows = _load_all()
     for i, row in enumerate(rows):
         if row["id"] == user_id:
@@ -107,9 +146,12 @@ def update_user(user_id: str, **fields) -> User:
             return User(**updated_user)
     raise KeyError(f"User with id {user_id} not found")
 
-# Delete the user with the given user id
-# Returns true if delete was successful, false otherwise (user not found)
 def delete_user(user_id: str) -> bool:
+    """
+    Delete a user
+    :param user_id: the user's id
+    :return: TRUE if deletion succeeded; otherwise, FALSE
+    """
     rows = _load_all()
     new_rows = [r for r in rows if r["id"] != user_id]
     if len(new_rows) == len(rows):
@@ -117,8 +159,12 @@ def delete_user(user_id: str) -> bool:
     _save_all(new_rows)
     return True
 
-# Return the user's travel preferences
 def get_user_preferences(user_id: str) -> dict:
+    """
+    Return the user's preferences
+    :param user_id: the user's id
+    :return: the user's preferences
+    """
     user = get_user_by_id(user_id)
     return {
         "group_size": user.group_size,
@@ -129,13 +175,21 @@ def get_user_preferences(user_id: str) -> dict:
         "travel_end": user.travel_end
     }
 
-# Reset the users file (for testing purposes)
 def reset_users_file() -> None:
+    """
+    Reset the users file to empty. Useful for resetting the app.
+    :return: None
+    """
     DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
     DATA_PATH.write_text("[]", encoding="utf-8")
 
-# Set a new password hash for the given user
 def set_user_password_hash(user_id: str, password_hash: str) -> User:
+    """
+    Update the user's password hash
+    :param user_id: the user's id
+    :param password_hash: the new password hash
+    :return: the updated user
+    """
     rows = _load_all()
     for i, row in enumerate(rows):
         if row["id"] == user_id:

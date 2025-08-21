@@ -1,14 +1,16 @@
-import json, random
-from pathlib import Path
-
+import json
 import numpy as np
 import pandas as pd
+from pathlib import Path
 
-from users import get_user_preferences
-from app import load_properties
+from users import User
 
 TOP_N_PROPERTIES = 5
 DATA_PATH = Path(__file__).parent / "data" / "records.json"
+
+"""
+Handle all logic for the app's recommender
+"""
 
 # Add features and weight_features back it later once added to User
 class UserPrefs:
@@ -87,12 +89,12 @@ def score_properties(df, prefs):
 
     return df.sort_values("match_score", ascending=False)
 
-def run_vectorization():
-    properties = load_properties()
+def run_vectorization(user: User, n: int):
+    properties = get_properties()
 
     df = pd.DataFrame(properties)
 
-    prefs = UserPrefs(budget=200, preferred_environment="lakefront",
+    prefs = UserPrefs(user.budget_max, user.preferred_env,
                       weight_afford=10, weight_env=5)
     prefs.normalize_weights()
     print(prefs)
@@ -114,6 +116,11 @@ def run_vectorization():
         json.dump(out, f, indent=2)
     print("Saved top_matches.json with", len(out), "records.")
     print(json.dumps(out[:2], indent=2))
+    return out
 
-if __name__ == "__main__":
-    run_vectorization()
+def produce_top_matches(user: User, n:int=TOP_N_PROPERTIES):
+    return run_vectorization(user, n)
+
+# if __name__ == "__main__":
+    # top_properties = produce_top_matches()
+    # print(top_properties)

@@ -7,9 +7,10 @@ import hmac
 _ALGO = "pbkdf2_sha256"
 _ITER = 310000
 
-# High-level design:
-# - Owns the password logic
-# - No direct file I/O for users
+"""
+This module handles all the authentication logic for the app. It does not do any direct file I/O for users, as it uses
+users_servie.py for this purpose.
+"""
 
 # ======================================================================================================================
 # HELPERS
@@ -18,8 +19,14 @@ _ITER = 310000
 def _now_iso() -> str:
     return datetime.isoformat(timespec="seconds")
 
-# Returns hashed password in the form 'pbkdf2_sha256$ITER$SALT_HEX$HASH_HEX'
 def _hash_password(plain_password: str) -> str:
+    """
+      Hashes the plain_password and returns the hash in the form 'pbkdf2_sha256$ITER$SALT_HEX$HASH_HEX'
+      TODO: info about hashing alg
+
+      :param plain_password: the plain_password to be hashed
+      :return: the hash
+    """
     if not isinstance(plain_password, str) or len(plain_password) < 8:
         raise ValueError("Password must be at least 8 characters long")
     salt = os.urandom(16)
@@ -27,6 +34,14 @@ def _hash_password(plain_password: str) -> str:
     return f"{_ALGO}${_ITER}${binascii.hexlify(salt).decode()}${binascii.hexlify(dk).decode()}"
 
 def _verify_password(plain_password: str, stored_password: str) -> bool:
+    """
+      Checks if the plain password matches the stores password by hashing it
+      TODO: info about hashing alg
+
+      :param plain_password: the plain_password to be verified
+      :param stored_password: the stored_password
+      :return: TRUE if password matches stored password; FALSE otherwise
+    """
     try:
         algo, iter_s, salt_hex, hash_hex = stored_password.split("$", 3)
         if algo != _ALGO:
@@ -47,6 +62,16 @@ def _verify_password(plain_password: str, stored_password: str) -> bool:
 # ======================================================================================================================
 
 def signup(*, email: str, first_name: str, last_name: str, password: str, **optional_fields) -> User:
+    """
+      Create a new user with the provided information, including saving their authentication credentials
+
+      :param email: the email of the user
+      :param first_name: the first name of the user
+      :param last_name: the last name of the user
+      :param password: the password of the user (plain)
+      :param optional_fields: any additional fields entered by the user (user preferences)
+      :return: the created user
+    """
     if get_user_by_email(email):
         raise ValueError("A user with this email already exists")
 
@@ -54,6 +79,14 @@ def signup(*, email: str, first_name: str, last_name: str, password: str, **opti
     return set_user_password_hash(user.id, _hash_password(password))
 
 def verify_user_password(user_id: str, password: str) -> bool:
+    """
+      Verify the user password (public)
+      TODO: maybe combine with other function
+
+      :param user_id: the id of the user
+      :param password: the password of the user (plain)
+      :return: TRUE if the user if verified; FALSE otherwise
+    """
     user = get_user_by_id(user_id)
     print(user)
     if not user:
@@ -62,8 +95,15 @@ def verify_user_password(user_id: str, password: str) -> bool:
         raise ValueError(f"The user with user id {user_id} has no password hash")
     return _verify_password(password, user.password_hash)
 
-# First check the user's password, then if valid, update their password
 def change_password(*, email: str, old_password: str, new_password: str) -> User:
+    """
+      First check the users password is verified. If it is, update their password. Otherwise, do not.
+
+      :param email: the email of the user
+      :param old_password: the old password of the user (plain)
+      :param new_password: the new password of the user (plain)
+      :return: the updater user
+    """
     user = get_user_by_email(email)
     if not user:
         raise ValueError(f"User with email {email} not found")

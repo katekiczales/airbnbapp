@@ -2,14 +2,14 @@ import streamlit as st
 import sys, pathlib
 import pandas as pd
 
+from recommender import produce_top_matches
+from sessions import get_current_user
+
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from sessions import get_current_user
-from app import load_properties, get_properties
-
-st.title("Explore Property Listings")
+st.title("Top Picks")
 
 # ---- Authentication gate ----
 token = st.session_state.get("token")
@@ -22,14 +22,14 @@ if not user:
 st.caption(f"You are logged in as {getattr(user, 'first_name', '')} {getattr(user, 'last_name', '')} — {user.email}")
 
 # ---- Load and show properties ----
-props = get_properties()
+props = produce_top_matches(user)
 df = pd.DataFrame(props)
 
 if df.empty:
-    st.info("No properties were found in data/properties.json")
+    st.info("No properties were found in data/records.json")
 else:
     st.dataframe(
-        df[["property_id", "location", "type", "nightly_price", "tags", "features", "capacity"]],
+        df[["property_id", "location", "type", "nightly_price", "tags", "features"]],
         use_container_width=True,
         hide_index=True,
     )

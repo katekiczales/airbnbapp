@@ -96,7 +96,7 @@ with st.form("profile_form", clear_on_submit=False):
             st.error(f"Update failed: {e}")
 
 st.divider()
-st.subheader("Danger zone")
+st.subheader("Delete account")
 
 with st.expander("Delete my account", expanded=False):
     st.warning("This will permanently delete your account and sign you out.")
