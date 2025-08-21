@@ -1,6 +1,8 @@
 .DS_Store
 .idea/
 
+.config_private.py
+
 __pycache__/
 *.py[cod]
 *.egg-info/

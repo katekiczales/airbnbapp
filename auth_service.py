@@ -1,7 +1,7 @@
 from __future__ import annotations
 import os, hashlib, binascii
 from datetime import datetime
-from users import User, get_user_by_email, create_user, set_user_password_hash, get_user_by_id
+from users_service import User, get_user_by_email, create_user, set_user_password_hash, get_user_by_id
 import hmac
 
 _ALGO = "pbkdf2_sha256"
@@ -117,7 +117,7 @@ def change_password(*, email: str, old_password: str, new_password: str) -> User
 # TESTS
 # ======================================================================================================================
 if __name__ == "__main__":
-    from users import reset_users_file
+    from users_service import reset_users_file
     try:
         reset_users_file()
     except ValueError:

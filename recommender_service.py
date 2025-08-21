@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-from users import User
+from users_service import User
 
 TOP_N_PROPERTIES = 5
 DATA_PATH = Path(__file__).parent / "data" / "records.json"

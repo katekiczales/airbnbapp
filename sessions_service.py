@@ -4,8 +4,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional, Tuple
 
-from users import get_user_by_email, get_user_by_id, User
-from auth import verify_user_password
+from users_service import get_user_by_email, get_user_by_id, User
+from auth_service import verify_user_password
 
 SESSIONS_PATH = Path(__file__).parent / "data" / "sessions.json"
 
@@ -146,8 +146,8 @@ def logout(token: str) -> bool:
 # ======================================================================================================================
 
 if __name__ == "__main__":
-    from users import reset_users_file, set_user_password_hash, create_user
-    from auth import signup, change_password
+    from users_service import reset_users_file, set_user_password_hash, create_user
+    from auth_service import signup, change_password
 
     # Set up a clean file system for tests
     try:

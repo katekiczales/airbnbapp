@@ -5,8 +5,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from sessions import get_current_user, logout
-from users import update_user, delete_user
+from sessions_service import get_current_user, logout
+from users_service import update_user, delete_user
 
 st.title("Your Profile")
 

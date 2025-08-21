@@ -2,8 +2,8 @@ import streamlit as st
 import sys, pathlib
 import pandas as pd
 
-from recommender import produce_top_matches
-from sessions import get_current_user
+from recommender_service import produce_top_matches
+from sessions_service import get_current_user
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:

@@ -5,8 +5,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from auth import signup
-from sessions import login, get_current_user, logout
+from auth_service import signup
+from sessions_service import login, get_current_user, logout
 
 st.set_page_config(page_title="Summer Home Recommender", layout="centered")
 
