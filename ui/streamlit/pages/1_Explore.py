@@ -2,12 +2,13 @@ import streamlit as st
 import sys, pathlib
 import pandas as pd
 
+from properties_service import ensure_properties
+
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from sessions_service import get_current_user
-from app import load_properties, get_properties
 
 st.title("Explore Property Listings")
 
@@ -22,7 +23,7 @@ if not user:
 st.caption(f"You are logged in as {getattr(user, 'first_name', '')} {getattr(user, 'last_name', '')} — {user.email}")
 
 # ---- Load and show properties ----
-props = get_properties()
+props = ensure_properties()
 df = pd.DataFrame(props)
 
 if df.empty:

@@ -17,7 +17,7 @@ HEADERS = {"Authorization": f"Bearer {OPENROUTER_API_KEY}",
 SYSTEM_PROMPT = """\
 You are a data generator for an Airbnb-style app. 
 Return ONLY valid JSON (no other text). 
-Return a JSON array of 50 property objects. Each object must have:
+Return a JSON array of 25 property objects. Each object must have:
 - property_id (string, unique)
 - location (city/town, string)
 - type (e.g., house, condo, cabin; a string)
@@ -25,6 +25,8 @@ Return a JSON array of 50 property objects. Each object must have:
 - features (array of strings, e.g., ["wifi","pool"])
 - tags (array of strings, e.g., ["city","lake","nightlife","pet-friendly"])
 - capacity (number of people the property can accommodate, integer)
+- lat (the latitude of the location)
+- lon (the longitude of the location)
 Other constraints:
 - Include at least 3 properties with location exactly "Tofino".
 - Vary prices, types, features, tags, and capacities to simulate possible real properties.
@@ -79,29 +81,34 @@ def save_properties(props: list[dict], path: Path = PROPERTIES_DATA_PATH) -> Non
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(props, indent=2), encoding="utf-8")
 
-def generate_properties() -> list[dict]:
-    """
-      Generate and save the properties (public)
-
-      :return: the generated properties
-    """
-    props = llm_generate_properties()
-    save_properties(props)
-    return props
-
-# TODO: if no properties exist
 def load_properties_from_disk() -> list[dict]:
     """
-      Load the properties from disk
-
-      :return: the loaded properties
+    Return a list of properties from disk, or [] if missing/empty/invalid.
     """
-    with open(PROPERTIES_DATA_PATH, "r") as file:
-        props = json.load(file)
+    try:
+        if not PROPERTIES_DATA_PATH.exists() or PROPERTIES_DATA_PATH.stat().st_size == 0:
+            return []
+        with PROPERTIES_DATA_PATH.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except json.JSONDecodeError:
+        return []
+
+def ensure_properties() -> list[dict]:
+    """
+    Return properties, generating and saving them & if missing
+
+    :return: a list of properties
+    """
+    props = load_properties_from_disk()
+    if not props:
+        props = llm_generate_properties()
+        save_properties(props)
     return props
 
 if __name__ == "__main__":
     print("Generating properties using OpenRouter")
     properties = llm_generate_properties()
+    print(properties)
     save_properties(properties)
     print(f"Wrote {len(properties)} properties to {PROPERTIES_DATA_PATH}")

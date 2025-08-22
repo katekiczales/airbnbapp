@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
+from properties_service import ensure_properties
 from users_service import User
 
 TOP_N_PROPERTIES = 5
@@ -90,7 +91,7 @@ def score_properties(df, prefs):
     return df.sort_values("match_score", ascending=False)
 
 def run_vectorization(user: User, n: int):
-    properties = get_properties()
+    properties = ensure_properties()
 
     df = pd.DataFrame(properties)
 

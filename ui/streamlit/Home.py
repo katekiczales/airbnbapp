@@ -10,6 +10,11 @@ from sessions_service import login, get_current_user, logout
 
 st.set_page_config(page_title="Summer Home Recommender", layout="centered")
 
+from properties_service import ensure_properties
+
+with st.spinner("Preparing property listings…"):
+    _ = ensure_properties()
+
 # HELPER FUNCTIONS
 def is_authed() -> bool:
     return bool(st.session_state.get("token"))
