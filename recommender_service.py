@@ -2,55 +2,59 @@ import json
 import numpy as np
 import pandas as pd
 from pathlib import Path
+from collections import defaultdict
+from typing import Any
 
+from interactions_service import load_interactions
 from properties_service import ensure_properties
 from users_service import User
 
 TOP_N_PROPERTIES = 5
 DATA_PATH = Path(__file__).parent / "data" / "records.json"
 
+# TODO: citation for class code
+
 """
-Handle all logic for the app's recommender
+This service handles all recommender logic for the app's recommender. 
 """
 
-# Add features and weight_features back it later once added to User
 class UserPrefs:
     def __init__(
         self,
         budget: float,
-        preferred_environment: str,   # e.g., 'lakefront', 'urban', ...
-        # must_have_features: None,
+        preferred_environment: str,
         weight_afford: float = 0.5,
         weight_env: float = 0.3,
-        # w_feat: float = 0.2,
+        weight_prefs: float = 0.2, # Small default (for minimal interactions, don't want much influence)
     ):
         self.budget = budget
         self.preferred_environment = preferred_environment
-        # self.must_have_features = must_have_features
         self.weight_afford = weight_afford
         self.weight_env = weight_env
-        # self.w_feat = w_feat
+        self.weight_prefs = weight_prefs
 
     def normalize_weights(self):
-        total = self.weight_afford + self.weight_env # + self.w_feat
+        total = self.weight_afford + self.weight_env + self.weight_prefs
         if total == 0:
-            # self.weight_afford, self.w_env, self.w_feat = 1.0, 0.0, 0.0
-            self.weight_afford, self.weight_env = 1.0, 0.0
+            self.weight_afford, self.weight_env, self.weight_prefs = 1.0, 0.0, 0.0
         else:
             self.weight_afford /= total
             self.weight_env /= total
-            # self.w_feat /= total
+            self.weight_prefs /= total
 
     def __repr__(self):
         return (
             f"UserPrefs(budget={self.budget}, "
             f"preferred_environment={self.preferred_environment!r}, "
-            # f"must_have_features={self.must_have_features}, "
-            # f"w_afford={self.weight_afford:.3f}, w_env={self.weight_env:.3f}, w_feat={self.w_feat:.3f})"
             f"w_afford={self.weight_afford:.3f}, w_env={self.weight_env:.3f})"
+            f"w_prefs={self.weight_prefs:.3f})"
         )
 
-def score_properties(df, prefs):
+# ======================================================================================================================
+# HELPER FUNCTIONS (for internal use)
+# ======================================================================================================================
+
+def score_properties(df, prefs, affinity: dict[str, float] | None = None):
     df = df.copy()
 
     # Affordability (vectorized on the numeric column)
@@ -67,25 +71,29 @@ def score_properties(df, prefs):
     else:
         env = np.zeros(len(df), dtype=float)
 
-    # Feature overlap: |must_have ∩ features| / |must_have| (no apply; list comprehension)
-    # if prefs.must_have_features:
-    #     mh = {f.lower() for f in prefs.must_have_features}
-    #     mh_len = max(len(mh), 1)
-    #     feat = np.array([
-    #         len(mh.intersection([f.lower() for f in fs])) / mh_len
-    #         for fs in df["features"]
-    #     ], dtype=float)
-    # else:
-    #     feat = np.zeros(len(df), dtype=float)
+        # NEW: Preferences (from interactions -> affinity)
+    if affinity:
+        pref_scores = []
+        for feats, tags in zip(df.get("features", []), df.get("tags", [])):
+            toks = []
+            if isinstance(feats, list):
+                toks += [str(t).strip().lower() for t in feats]
+            if isinstance(tags, list):
+                toks += [str(t).strip().lower() for t in tags]
+            vals = [affinity[t] for t in toks if t in affinity]
+            pref_scores.append(float(sum(vals) / len(vals)) if vals else 0.0)
+        prefs_score = np.array(pref_scores, dtype=float)
+    else:
+        prefs_score = np.zeros(len(df), dtype=float)
 
     # Weighted score
     df["afford_score"] = afford
     df["env_score"] = env
-    # df["feat_score"] = feat
+    df["prefs_score"] = prefs_score  # NEW
     df["match_score"] = (
         prefs.weight_afford * df["afford_score"] +
-        prefs.weight_env    * df["env_score"]
-        # prefs.w_feat   * df["feat_score"]
+        prefs.weight_env    * df["env_score"] +
+        prefs.weight_prefs * df["prefs_score"]
     )
 
     return df.sort_values("match_score", ascending=False)
@@ -95,33 +103,84 @@ def run_vectorization(user: User, n: int):
 
     df = pd.DataFrame(properties)
 
-    prefs = UserPrefs(user.budget_max, user.preferred_env,
-                      weight_afford=10, weight_env=5)
+    prefs = UserPrefs(
+        user.budget_max,
+        user.preferred_env,
+        weight_afford=10,
+        weight_env=5,
+        weight_prefs=3,
+    )
     prefs.normalize_weights()
-    print(prefs)
 
-    scored = score_properties(df, prefs)
-    scored[["property_id", "location", "type", "nightly_price", "afford_score", "env_score",
-            "match_score"]].head(10)
-    # scored[["property_id", "location", "type", "nightly_price", "afford_score", "env_score", "feat_score",
-    #         "match_score"]].head(10)
+    affinity = build_user_affinity(user.id, df)
 
-    cols = ["property_id", "location", "type", "nightly_price", "features", "tags", "match_score"]
-    top = scored.head(TOP_N_PROPERTIES)[cols]
-    top = top.assign(match_score=top["match_score"].round(3))
-    top.reset_index(drop=True)
+    scored = score_properties(df, prefs, affinity=affinity)
 
-    # Save the top n properties to json for use on frontend
+    top = scored.head(n).copy()
+
+    top["score"] = ((top["match_score"] * 100).round(1)).astype(str) + "%"
+
+    cols = [
+        "property_id", "location", "type", "nightly_price",
+        "features", "tags",
+        "score"
+    ]
+    top = top[cols]
+
+    top.reset_index(drop=True, inplace=True)
     out = top.to_dict(orient="records")
     with open(DATA_PATH, "w") as f:
         json.dump(out, f, indent=2)
-    print("Saved top_matches.json with", len(out), "records.")
-    print(json.dumps(out[:2], indent=2))
+
     return out
+
+def build_user_affinity(user_id: str, df: pd.DataFrame) -> dict[str, float]:
+    """
+    Builds affinity for the given user using tokens (which are either property features or tags).
+    Each view event contributes 1 and each save event contributes 3, normalized over the range [0, 1].
+
+    :param user_id: the user id
+    :param df: the properties
+    :return:
+    """
+
+    # Only look at the interactions for the current user
+    rows = [r for r in load_interactions() if r.get("user_id") == user_id]
+    if not rows:
+        return {}
+
+    # Make a dictionary containing features and tags for each property
+    by_id: dict[str, tuple[list[Any], list[Any]]] = {}
+    for rec in df.to_dict(orient="records"):
+        by_id[rec.get("property_id")] = (rec.get("features") or [], rec.get("tags") or [])
+
+    # Look at each relevant interaction
+    counts: dict[str, float] = defaultdict(float)
+    for row in rows:
+        pid = row.get("property_id")
+        if pid not in by_id:
+            continue
+        weight = row.get("weight")
+        if weight is None:
+            weight = 3.0 if row.get("event") == "save" else 1.0
+
+        # Create a list of the properties features and tags with appropriate normalized weights
+        feats, tags = by_id[pid]
+        tokens = [*(feats or []), *(tags or [])]
+        for token in tokens:
+            t = str(token).strip().lower()
+            if t:
+                counts[t] += float(weight)
+
+    if not counts:
+        return {}
+
+    m = max(counts.values()) or 1.0
+    return {tok: cnt / m for tok, cnt in counts.items()}
+
+# ======================================================================================================================
+# API-STYLE FUNCTIONS
+# ======================================================================================================================
 
 def produce_top_matches(user: User, n:int=TOP_N_PROPERTIES):
     return run_vectorization(user, n)
-
-# if __name__ == "__main__":
-    # top_properties = produce_top_matches()
-    # print(top_properties)

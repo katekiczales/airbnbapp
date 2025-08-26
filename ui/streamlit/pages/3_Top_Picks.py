@@ -22,14 +22,26 @@ if not user:
 st.caption(f"You are logged in as {getattr(user, 'first_name', '')} {getattr(user, 'last_name', '')} — {user.email}")
 
 # ---- Load and show properties ----
-props = produce_top_matches(user)
+
+with st.spinner("Computing your top picks..."):
+    props = produce_top_matches(user, n=5)
+
 df = pd.DataFrame(props)
 
 if df.empty:
     st.info("No properties were found in data/records.json")
 else:
     st.dataframe(
-        df[["property_id", "location", "type", "nightly_price", "tags", "features"]],
+        df[["property_id", "location", "type", "nightly_price", "tags", "features", "score"]],
         use_container_width=True,
         hide_index=True,
+        column_config={
+            "property_id": "Property ID",
+            "location": "Location",
+            "type": "Type",
+            "nightly_price": st.column_config.NumberColumn("Nightly Price", format="$%d"),
+            "tags": "Tags",
+            "features": "Features",
+            "score": "Percent Match",
+        },
     )

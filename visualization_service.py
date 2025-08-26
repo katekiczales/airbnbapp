@@ -1,6 +1,5 @@
 from __future__ import annotations
 import pandas as pd
-from typing import Any
 
 from properties_service import load_properties_from_disk
 

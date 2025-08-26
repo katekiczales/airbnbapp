@@ -26,6 +26,11 @@ def current_user():
     return get_current_user(token)
 
 # UI CODE
+
+msg = st.session_state.pop("flash_success", None)
+if msg:
+    st.success(msg)
+
 st.title("Summer Home Recommender")
 st.write("Log in or sign up below")
 
@@ -95,7 +100,11 @@ with col2:
                     budget_min=int(bmin),
                     budget_max=int(bmax),
                 )
-                st.success(f"Account created for {user.email}. You can now log in on the right.")
+
+                token, uid = login(su_email.strip(), su_password.strip())
+                st.session_state["token"] = token
+                st.session_state["flash_success"] = f"Welcome, {user.first_name}! Your account has been successfully created and you are now signed in."
+                st.rerun()
             except Exception as e:
                 st.error(f"Sign up failed: {e}")
 
