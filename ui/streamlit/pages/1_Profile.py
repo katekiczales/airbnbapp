@@ -8,9 +8,7 @@ if str(ROOT) not in sys.path:
 from sessions_service import get_current_user, logout
 from users_service import update_user, delete_user
 
-"""
-On this page, users can update, view, or delete their profile.
-"""
+# On this page, users can update, view, or delete their profile.
 
 msg = st.session_state.pop("flash_success", None)
 if msg:

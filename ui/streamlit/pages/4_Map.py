@@ -11,9 +11,7 @@ if str(ROOT) not in sys.path:
 
 from sessions_service import get_current_user
 
-"""
-On this page, users can view a map showing the geographical distribution of properties.
-"""
+# On this page, users can view a map showing the geographical distribution of properties.
 
 st.title("Property Listings Map")
 

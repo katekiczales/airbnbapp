@@ -11,10 +11,7 @@ if str(ROOT) not in sys.path:
 
 from sessions_service import get_current_user
 
-"""
-On this page, users can explore all properties available on the app. They can also save properties and view
-saved properties.
-"""
+# On this page, users can explore all properties available on the app. They can also save properties and view saved properties.
 
 st.title("Explore Property Listings")
 
