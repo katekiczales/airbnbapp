@@ -10,6 +10,17 @@ _ITER = 310000
 """
 This module handles all the authentication logic for the app. It does not do any direct file I/O for users, as it uses
 users_servie.py for this purpose.
+
+Hashing algorithm:
+Uses PBKDF2-HMAC-SHA256 (Password-Based Key Derivation Function 2 with HMAC-SHA256).
+1. Generates a salt (random bytes) - ensures identical plaintext passwords produce different hashes
+2. Derives a key by applying HMAC-SHA256 repeatedly
+3. Return a string in the format: pbkdf2_sha256$<iterations>$<salt_hex>$<hash_hex>
+
+Password verification:
+Parse the stored string to get the hashing algorithm, number of iterations, salt, and expected_hash.
+Re-derive the hash with the provided plaintext: pbkdf2_hmac("sha256", provided_pw, salt, iters).
+Compare the derived password to the expected password
 """
 
 # ======================================================================================================================
@@ -17,12 +28,15 @@ users_servie.py for this purpose.
 # ======================================================================================================================
 
 def _now_iso() -> str:
+    """
+    Return the current date and time as a ISO 8601 formatted string.
+    :return: current date and time
+    """
     return datetime.isoformat(timespec="seconds")
 
 def _hash_password(plain_password: str) -> str:
     """
       Hashes the plain_password and returns the hash in the form 'pbkdf2_sha256$ITER$SALT_HEX$HASH_HEX'
-      TODO: info about hashing alg
 
       :param plain_password: the plain_password to be hashed
       :return: the hash
@@ -35,8 +49,7 @@ def _hash_password(plain_password: str) -> str:
 
 def _verify_password(plain_password: str, stored_password: str) -> bool:
     """
-      Checks if the plain password matches the stores password by hashing it
-      TODO: info about hashing alg
+      Checks if the plain password matches the stored password by hashing it
 
       :param plain_password: the plain_password to be verified
       :param stored_password: the stored_password
@@ -81,7 +94,6 @@ def signup(*, email: str, first_name: str, last_name: str, password: str, **opti
 def verify_user_password(user_id: str, password: str) -> bool:
     """
       Verify the user password (public)
-      TODO: maybe combine with other function
 
       :param user_id: the id of the user
       :param password: the password of the user (plain)

@@ -4,7 +4,7 @@ from typing import List, Dict
 import json
 from datetime import datetime
 
-INTERACTIONS_PATH = Path(__file__).resolve().parents[1] / "data" / "interactions.json"
+INTERACTIONS_PATH: Path = Path(__file__).parent / "data" / "interactions.json"
 EVENT_WEIGHTS = {"view": 1, "save": 3}
 
 # ======================================================================================================================
@@ -12,15 +12,26 @@ EVENT_WEIGHTS = {"view": 1, "save": 3}
 # ======================================================================================================================
 
 def _now_iso() -> str:
+    """
+    Return the ISO 8601 formatted timestamp
+    :return: return the timestamp
+    """
     now = datetime.now()
     return now.isoformat() + "Z"
 
 def _ensure_data_file() -> None:
+    """
+    Ensure the data file exists
+    """
     if not INTERACTIONS_PATH.exists():
         INTERACTIONS_PATH.parent.mkdir(parents=True, exist_ok=True)
         INTERACTIONS_PATH.write_text("[]", encoding="utf-8")
 
 def load_interactions() -> List[Dict]:
+    """
+    Load the interactions data file
+    :return:
+    """
     _ensure_data_file()
     try:
         return json.loads(INTERACTIONS_PATH.read_text(encoding="utf-8"))

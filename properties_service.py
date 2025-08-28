@@ -84,6 +84,7 @@ def save_properties(props: list[dict], path: Path = PROPERTIES_DATA_PATH) -> Non
 def load_properties_from_disk() -> list[dict]:
     """
     Return a list of properties from disk, or [] if missing/empty/invalid.
+    :return: list of properties
     """
     try:
         if not PROPERTIES_DATA_PATH.exists() or PROPERTIES_DATA_PATH.stat().st_size == 0:
@@ -105,10 +106,3 @@ def ensure_properties() -> list[dict]:
         props = llm_generate_properties()
         save_properties(props)
     return props
-
-if __name__ == "__main__":
-    print("Generating properties using OpenRouter")
-    properties = llm_generate_properties()
-    print(properties)
-    save_properties(properties)
-    print(f"Wrote {len(properties)} properties to {PROPERTIES_DATA_PATH}")

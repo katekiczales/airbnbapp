@@ -12,10 +12,9 @@ from users_service import User
 TOP_N_PROPERTIES = 5
 DATA_PATH = Path(__file__).parent / "data" / "records.json"
 
-# TODO: citation for class code
-
 """
-This service handles all recommender logic for the app's recommender. 
+This service handles all recommender logic for the app's recommender. This include collaborative filtering and 
+standard recommender filtering (as discussed in class).
 """
 
 class UserPrefs:
@@ -23,9 +22,9 @@ class UserPrefs:
         self,
         budget: float,
         preferred_environment: str,
-        weight_afford: float = 0.5,
-        weight_env: float = 0.3,
-        weight_prefs: float = 0.2, # Small default (for minimal interactions, don't want much influence)
+        weight_afford: float = 0.4,
+        weight_env: float = 0.2,
+        weight_prefs: float = 0.4,
     ):
         self.budget = budget
         self.preferred_environment = preferred_environment
@@ -55,6 +54,13 @@ class UserPrefs:
 # ======================================================================================================================
 
 def score_properties(df, prefs, affinity: dict[str, float] | None = None):
+    """
+    Score the properties based on affordability, environment, and affinity preferences
+    :param df: the properties
+    :param prefs: the user preferences
+    :param affinity: the generated user affinity
+    :return: the scored properties
+    """
     df = df.copy()
 
     # Affordability (vectorized on the numeric column)
@@ -71,7 +77,7 @@ def score_properties(df, prefs, affinity: dict[str, float] | None = None):
     else:
         env = np.zeros(len(df), dtype=float)
 
-        # NEW: Preferences (from interactions -> affinity)
+    # If affinity exists, score the properties using it
     if affinity:
         pref_scores = []
         for feats, tags in zip(df.get("features", []), df.get("tags", [])):
@@ -99,6 +105,12 @@ def score_properties(df, prefs, affinity: dict[str, float] | None = None):
     return df.sort_values("match_score", ascending=False)
 
 def run_vectorization(user: User, n: int):
+    """
+    Run vectorization for the properties
+    :param user: the current user
+    :param n: the number of properties to return
+    :return: the top n properties
+    """
     properties = ensure_properties()
 
     df = pd.DataFrame(properties)
@@ -141,7 +153,7 @@ def build_user_affinity(user_id: str, df: pd.DataFrame) -> dict[str, float]:
 
     :param user_id: the user id
     :param df: the properties
-    :return:
+    :return: the user's affinity as a dictionary
     """
 
     # Only look at the interactions for the current user
@@ -183,4 +195,12 @@ def build_user_affinity(user_id: str, df: pd.DataFrame) -> dict[str, float]:
 # ======================================================================================================================
 
 def produce_top_matches(user: User, n:int=TOP_N_PROPERTIES):
+    """
+    Return the top n properties for the current user. This function exists to ensure separation between
+    frontend-serving functions and backend functions for code cleanliness.
+
+    :param user: the current user
+    :param n: the number of properties to return
+    :return: the top n properties for the current user
+    """
     return run_vectorization(user, n)

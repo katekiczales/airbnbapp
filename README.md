@@ -20,7 +20,7 @@ user viewed a property with the feature 'Hot Tub', the token 'Hot Tub' would app
 
 Based on the user's affinity, the algorithm generates a preference score (pref_score) for each property. This is the 
 average of the user's affinity values for any token (features/tags) on the property that also appear in the users 
-interaction history. The pref_score for the property is 0 if there is no overlap or the user has no interaction history.
+interaction history (affinity). The pref_score for the property is 0 if there is no overlap or the user has no interaction history.
 
 The algorithm also considers other factors that may influence a user's preferences (basic filtering):
   - Affordability (afford_score): for all properties, compare the property's nightly_price to the user’s budget. Give 
@@ -45,22 +45,27 @@ Data sources:
 
 ## Explanation of LLM integration
 
-The project uses an LLM to generate listings. This is useful to generate a larger quantity of diverse listings than 
-could be manually written, to simulate what might be available on a real AirBnb-style app.
+The project uses an LLM to generate listings. This is useful to **generate a larger quantity of diverse listings than 
+could be manually written, to simulate what might be available on a real AirBnb-style app.**
 
 The logic for the LLM integration is owned by properties_service.py
 
 The API key (generated through OpenRouter) is imported from config_private, which is not tracked by git to 
-ensure privacy. The service uses the DeepSeek LLM through OpenRouter's API. It sends a pre-written prompt in the POST 
+ensure privacy. The service **uses the DeepSeek LLM through OpenRouter's API.** 
+
+The service sends a pre-written prompt in the POST 
 request's payload through an OpenRouter URL. The prompt requests 25 properties, each with only the required fields 
 (id, location, type, nightly_price, features, tags, capacity, lat, lon). In addition, the prompt asks the model to 
 return only JSON, to minimize the amount of filtering needed. The returned properties are written directly to the disk 
 (after doing some error handling in case the returned format is not what was expected or nothing was returned). 
-The services' api-style function, which the frontend and various other services call, first checks if the properties data already exists. 
+
+The service's api-style function, which the frontend and various other services call, first checks if the properties data already exists. 
 If it does, it just returns it. Otherwise, it means this is the first time the app's page has been visited, or some issue 
 occurred, so the properties are generated and returned.
 
 ## Works Cited
 
 OpenAI. (2025). ChatGPT (Aug 26 version) [Large language model]. https://chat.openai.com
-TODO: class code citation
+
+Professor Senderovich, A. (2025). Matching With NumPy Pandas and LLM [Unpublished class code]. 
+Rotman School of Management, The University of Toronto.

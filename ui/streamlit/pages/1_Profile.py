@@ -8,6 +8,14 @@ if str(ROOT) not in sys.path:
 from sessions_service import get_current_user, logout
 from users_service import update_user, delete_user
 
+"""
+On this page, users can update, view, or delete their profile.
+"""
+
+msg = st.session_state.pop("flash_success", None)
+if msg:
+    st.success(msg)
+
 st.title("Your Profile")
 
 # AUTHENTICATION GATE
@@ -20,8 +28,12 @@ if not user:
 
 st.caption(f"Logged in as **{getattr(user, 'first_name', '')} {getattr(user, 'last_name', '')}** — {user.email}")
 
-# HELPER FUNCTIONS
 def _to_date(s: str | None):
+    """
+    Return the string as date
+    :param s: string representation
+    :return: date
+    """
     if not s:
         return None
     try:
@@ -30,6 +42,10 @@ def _to_date(s: str | None):
         return None
 
 def _iso_or_none(d: dt.date | None):
+    """
+    Return the iso representation of a date
+    :return: iso representation
+    """
     return d.isoformat() if d else None
 
 # Prefill values
@@ -90,7 +106,7 @@ with st.form("profile_form", clear_on_submit=False):
                 "travel_end": _iso_or_none(tend),
             }
             updated = update_user(user.id, **fields)
-            st.success("Profile updated.")
+            st.session_state["flash_success"] = "Profile Updated"
             st.rerun()
         except Exception as e:
             st.error(f"Update failed: {e}")

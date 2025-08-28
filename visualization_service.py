@@ -3,6 +3,10 @@ import pandas as pd
 
 from properties_service import load_properties_from_disk
 
+"""
+Handles backend functionality related to generating the map visualization
+"""
+
 def get_map_dataframe() -> pd.DataFrame:
     """
     Convert properties directly to a DataFrame for st.map.

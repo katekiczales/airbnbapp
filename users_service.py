@@ -4,7 +4,7 @@ from pathlib import Path
 from dataclasses import dataclass, asdict
 
 # Path to the users data
-DATA_PATH = Path(__file__).parent / "data" / "users.json"
+USERS_DATA_PATH = Path(__file__).parent / "data" / "users.json"
 
 USER_FIELDS = {
     "email", "first_name", "last_name", "group_size", "preferred_env",
@@ -56,7 +56,7 @@ def _load_all() -> list[dict]:
 
     :return: data for all users
     """
-    users =  json.loads(DATA_PATH.read_text(encoding="utf-8"))
+    users =  json.loads(USERS_DATA_PATH.read_text(encoding="utf-8"))
     return users
 
 def _save_all(rows: list[dict]) -> None:
@@ -66,7 +66,7 @@ def _save_all(rows: list[dict]) -> None:
     :param rows: the data to be saved
     :return: None
     """
-    DATA_PATH.write_text(json.dumps(rows, indent=2), encoding="utf-8")
+    USERS_DATA_PATH.write_text(json.dumps(rows, indent=2), encoding="utf-8")
 
 # ======================================================================================================================
 # API-STYLE FUNCTIONS (for internal and external use)
@@ -180,8 +180,8 @@ def reset_users_file() -> None:
     Reset the users file to empty. Useful for resetting the app.
     :return: None
     """
-    DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
-    DATA_PATH.write_text("[]", encoding="utf-8")
+    USERS_DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
+    USERS_DATA_PATH.write_text("[]", encoding="utf-8")
 
 def set_user_password_hash(user_id: str, password_hash: str) -> User:
     """

@@ -92,7 +92,6 @@ def create_session(user_id: str) -> dict:
     _save_all_sessions(rows)
     return row
 
-# Verify the login credentials and create a new session if verified
 def login(email: str, password: str) -> Tuple[str, str]:
     """
       Verify the login credentials and creates a new session if verified
@@ -146,8 +145,8 @@ def logout(token: str) -> bool:
 # ======================================================================================================================
 
 if __name__ == "__main__":
-    from users_service import reset_users_file, set_user_password_hash, create_user
-    from auth_service import signup, change_password
+    from users_service import reset_users_file
+    from auth_service import signup
 
     # Set up a clean file system for tests
     try:

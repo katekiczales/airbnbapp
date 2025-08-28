@@ -9,6 +9,10 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+"""
+On this page, users can view the top properties recommended to them.
+"""
+
 st.title("Top Picks")
 
 # ---- Authentication gate ----
