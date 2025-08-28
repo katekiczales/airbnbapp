@@ -7,7 +7,7 @@
     "features": [
       "wifi",
       "fireplace",
-      "hot tub"
+      "kitchen"
     ],
     "tags": [
       "beach",
@@ -15,63 +15,64 @@
       "quiet"
     ],
     "capacity": 4,
-    "lat": 49.152984,
-    "lon": -125.906608
+    "lat": 49.1528,
+    "lon": -125.9066
   },
   {
     "property_id": "prop2",
     "location": "Tofino",
     "type": "house",
-    "nightly_price": 250,
+    "nightly_price": 300,
     "features": [
       "wifi",
       "pool",
+      "hot tub",
       "kitchen"
     ],
     "tags": [
+      "luxury",
       "ocean view",
-      "family-friendly",
-      "luxury"
+      "family-friendly"
     ],
-    "capacity": 6,
-    "lat": 49.153984,
-    "lon": -125.907608
+    "capacity": 8,
+    "lat": 49.1532,
+    "lon": -125.907
   },
   {
     "property_id": "prop3",
     "location": "Tofino",
     "type": "condo",
-    "nightly_price": 120,
+    "nightly_price": 200,
     "features": [
       "wifi",
-      "parking",
-      "balcony"
+      "balcony",
+      "kitchen"
     ],
     "tags": [
-      "downtown",
-      "nightlife",
-      "modern"
+      "city",
+      "modern",
+      "pet-friendly"
     ],
-    "capacity": 2,
-    "lat": 49.154984,
-    "lon": -125.908608
+    "capacity": 6,
+    "lat": 49.1515,
+    "lon": -125.9058
   },
   {
     "property_id": "prop4",
     "location": "Vancouver",
     "type": "apartment",
-    "nightly_price": 100,
+    "nightly_price": 120,
     "features": [
       "wifi",
       "gym",
-      "elevator"
+      "kitchen"
     ],
     "tags": [
-      "city",
-      "shopping",
-      "business"
+      "downtown",
+      "nightlife",
+      "urban"
     ],
-    "capacity": 3,
+    "capacity": 2,
     "lat": 49.2827,
     "lon": -123.1207
   },
@@ -79,18 +80,19 @@
     "property_id": "prop5",
     "location": "Whistler",
     "type": "chalet",
-    "nightly_price": 300,
+    "nightly_price": 250,
     "features": [
       "wifi",
       "fireplace",
-      "sauna"
+      "hot tub",
+      "kitchen"
     ],
     "tags": [
+      "mountain",
       "ski-in/ski-out",
-      "luxury",
-      "mountain view"
+      "luxury"
     ],
-    "capacity": 8,
+    "capacity": 6,
     "lat": 50.1163,
     "lon": -122.9574
   },
@@ -102,7 +104,7 @@
     "features": [
       "wifi",
       "garden",
-      "bbq"
+      "kitchen"
     ],
     "tags": [
       "historic",
@@ -121,7 +123,7 @@
     "features": [
       "wifi",
       "pool",
-      "parking"
+      "balcony"
     ],
     "tags": [
       "lake",
@@ -129,23 +131,23 @@
       "modern"
     ],
     "capacity": 4,
-    "lat": 49.8877,
+    "lat": 49.8878,
     "lon": -119.496
   },
   {
     "property_id": "prop8",
     "location": "Banff",
     "type": "cabin",
-    "nightly_price": 200,
+    "nightly_price": 170,
     "features": [
       "wifi",
       "fireplace",
-      "hot tub"
+      "kitchen"
     ],
     "tags": [
       "mountain",
       "wildlife",
-      "secluded"
+      "rustic"
     ],
     "capacity": 4,
     "lat": 51.1784,
@@ -159,12 +161,12 @@
     "features": [
       "wifi",
       "gym",
-      "balcony"
+      "kitchen"
     ],
     "tags": [
       "downtown",
       "nightlife",
-      "shopping"
+      "urban"
     ],
     "capacity": 2,
     "lat": 43.6532,
@@ -177,12 +179,12 @@
     "nightly_price": 140,
     "features": [
       "wifi",
-      "parking",
+      "balcony",
       "kitchen"
     ],
     "tags": [
       "historic",
-      "artsy",
+      "artistic",
       "city"
     ],
     "capacity": 3,
@@ -193,7 +195,7 @@
     "property_id": "prop11",
     "location": "Quebec City",
     "type": "house",
-    "nightly_price": 170,
+    "nightly_price": 160,
     "features": [
       "wifi",
       "fireplace",
@@ -202,7 +204,7 @@
     "tags": [
       "historic",
       "charming",
-      "winter"
+      "family-friendly"
     ],
     "capacity": 6,
     "lat": 46.8139,
@@ -211,38 +213,37 @@
   {
     "property_id": "prop12",
     "location": "Halifax",
-    "type": "condo",
-    "nightly_price": 120,
+    "type": "apartment",
+    "nightly_price": 100,
     "features": [
       "wifi",
-      "ocean view",
-      "balcony"
+      "kitchen"
     ],
     "tags": [
-      "waterfront",
-      "modern",
-      "city"
+      "ocean",
+      "urban",
+      "budget"
     ],
-    "capacity": 4,
+    "capacity": 2,
     "lat": 44.6488,
     "lon": -63.5752
   },
   {
     "property_id": "prop13",
     "location": "Calgary",
-    "type": "apartment",
-    "nightly_price": 90,
+    "type": "condo",
+    "nightly_price": 130,
     "features": [
       "wifi",
-      "parking",
-      "gym"
+      "gym",
+      "balcony"
     ],
     "tags": [
       "downtown",
-      "business",
-      "shopping"
+      "modern",
+      "business"
     ],
-    "capacity": 2,
+    "capacity": 4,
     "lat": 51.0447,
     "lon": -114.0719
   },
@@ -250,16 +251,16 @@
     "property_id": "prop14",
     "location": "Ottawa",
     "type": "house",
-    "nightly_price": 160,
+    "nightly_price": 190,
     "features": [
       "wifi",
-      "bbq",
-      "garden"
+      "fireplace",
+      "kitchen"
     ],
     "tags": [
+      "historic",
       "family-friendly",
-      "quiet",
-      "historic"
+      "quiet"
     ],
     "capacity": 5,
     "lat": 45.4215,
@@ -269,16 +270,16 @@
     "property_id": "prop15",
     "location": "Niagara Falls",
     "type": "cottage",
-    "nightly_price": 190,
+    "nightly_price": 220,
     "features": [
       "wifi",
       "hot tub",
-      "fireplace"
+      "kitchen"
     ],
     "tags": [
       "waterfall",
       "romantic",
-      "secluded"
+      "scenic"
     ],
     "capacity": 4,
     "lat": 43.0896,
@@ -287,164 +288,144 @@
   {
     "property_id": "prop16",
     "location": "Edmonton",
-    "type": "condo",
-    "nightly_price": 100,
+    "type": "apartment",
+    "nightly_price": 90,
     "features": [
       "wifi",
-      "parking",
-      "balcony"
+      "kitchen"
     ],
     "tags": [
-      "downtown",
-      "modern",
-      "shopping"
+      "urban",
+      "budget",
+      "simple"
     ],
-    "capacity": 3,
+    "capacity": 2,
     "lat": 53.5461,
     "lon": -113.4938
   },
   {
     "property_id": "prop17",
-    "location": "Winnipeg",
+    "location": "Saskatoon",
     "type": "house",
-    "nightly_price": 140,
+    "nightly_price": 120,
     "features": [
       "wifi",
-      "bbq",
-      "garden"
+      "garden",
+      "kitchen"
     ],
     "tags": [
       "family-friendly",
       "quiet",
       "suburban"
     ],
-    "capacity": 6,
-    "lat": 49.8951,
-    "lon": -97.1384
-  },
-  {
-    "property_id": "prop18",
-    "location": "Saskatoon",
-    "type": "apartment",
-    "nightly_price": 80,
-    "features": [
-      "wifi",
-      "parking",
-      "gym"
-    ],
-    "tags": [
-      "downtown",
-      "modern",
-      "business"
-    ],
-    "capacity": 2,
+    "capacity": 4,
     "lat": 52.1332,
     "lon": -106.67
   },
   {
-    "property_id": "prop19",
-    "location": "Regina",
-    "type": "house",
-    "nightly_price": 130,
+    "property_id": "prop18",
+    "location": "Winnipeg",
+    "type": "condo",
+    "nightly_price": 110,
     "features": [
       "wifi",
-      "fireplace",
-      "bbq"
+      "gym",
+      "balcony"
     ],
     "tags": [
-      "family-friendly",
-      "quiet",
-      "suburban"
+      "downtown",
+      "modern",
+      "urban"
     ],
-    "capacity": 5,
-    "lat": 50.4452,
-    "lon": -104.6189
+    "capacity": 3,
+    "lat": 49.8951,
+    "lon": -97.1384
   },
   {
-    "property_id": "prop20",
-    "location": "St. John's",
+    "property_id": "prop19",
+    "location": "Charlottetown",
     "type": "cottage",
     "nightly_price": 150,
     "features": [
       "wifi",
-      "ocean view",
-      "fireplace"
+      "fireplace",
+      "kitchen"
     ],
     "tags": [
-      "historic",
-      "charming",
-      "seaside"
+      "coastal",
+      "quiet",
+      "historic"
     ],
     "capacity": 4,
+    "lat": 46.2382,
+    "lon": -63.1311
+  },
+  {
+    "property_id": "prop20",
+    "location": "St. John's",
+    "type": "house",
+    "nightly_price": 170,
+    "features": [
+      "wifi",
+      "fireplace",
+      "garden"
+    ],
+    "tags": [
+      "ocean",
+      "colorful",
+      "charming"
+    ],
+    "capacity": 5,
     "lat": 47.5615,
     "lon": -52.7126
   },
   {
     "property_id": "prop21",
-    "location": "Charlottetown",
-    "type": "house",
-    "nightly_price": 160,
-    "features": [
-      "wifi",
-      "garden",
-      "bbq"
-    ],
-    "tags": [
-      "historic",
-      "family-friendly",
-      "quiet"
-    ],
-    "capacity": 6,
-    "lat": 46.2382,
-    "lon": -63.1311
-  },
-  {
-    "property_id": "prop22",
     "location": "Yellowknife",
     "type": "cabin",
-    "nightly_price": 180,
+    "nightly_price": 200,
     "features": [
       "wifi",
       "fireplace",
-      "hot tub"
+      "kitchen"
     ],
     "tags": [
       "northern lights",
       "wilderness",
-      "secluded"
+      "adventure"
     ],
     "capacity": 4,
     "lat": 62.454,
     "lon": -114.3718
   },
   {
-    "property_id": "prop23",
+    "property_id": "prop22",
     "location": "Whitehorse",
     "type": "house",
-    "nightly_price": 170,
+    "nightly_price": 180,
     "features": [
       "wifi",
-      "fireplace",
-      "bbq"
+      "hot tub",
+      "kitchen"
     ],
     "tags": [
-      "northern",
-      "wilderness",
-      "quiet"
+      "mountain",
+      "remote",
+      "scenic"
     ],
-    "capacity": 5,
+    "capacity": 6,
     "lat": 60.7212,
     "lon": -135.0568
   },
   {
-    "property_id": "prop24",
+    "property_id": "prop23",
     "location": "Iqaluit",
     "type": "cabin",
-    "nightly_price": 200,
+    "nightly_price": 220,
     "features": [
       "wifi",
       "fireplace",
-      "hot tub"
+      "kitchen"
     ],
     "tags": [
       "arctic",
@@ -456,6 +437,24 @@
     "lon": -68.517
   },
   {
+    "property_id": "prop24",
+    "location": "Regina",
+    "type": "apartment",
+    "nightly_price": 100,
+    "features": [
+      "wifi",
+      "kitchen"
+    ],
+    "tags": [
+      "urban",
+      "budget",
+      "simple"
+    ],
+    "capacity": 2,
+    "lat": 50.4452,
+    "lon": -104.6189
+  },
+  {
     "property_id": "prop25",
     "location": "Fredericton",
     "type": "house",
@@ -463,14 +462,14 @@
     "features": [
       "wifi",
       "garden",
-      "bbq"
+      "kitchen"
     ],
     "tags": [
       "historic",
-      "family-friendly",
-      "quiet"
+      "quiet",
+      "family-friendly"
     ],
-    "capacity": 6,
+    "capacity": 4,
     "lat": 45.9636,
     "lon": -66.6431
   }

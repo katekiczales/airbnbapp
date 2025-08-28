@@ -63,9 +63,20 @@ The service's api-style function, which the frontend and various other services 
 If it does, it just returns it. Otherwise, it means this is the first time the app's page has been visited, or some issue 
 occurred, so the properties are generated and returned.
 
+Note that the LLM property generation only happens if there are no properties already in the /data/properties.json file.
+I.e., if the file contains only '[]'. This is because properties should only be generated one in a normal workflow.
+
 ## Works Cited
 
 OpenAI. (2025). ChatGPT (Aug 26 version) [Large language model]. https://chat.openai.com
 
 Professor Senderovich, A. (2025). Matching With NumPy Pandas and LLM [Unpublished class code]. 
 Rotman School of Management, The University of Toronto.
+
+## Running the Project
+
+To run the app, simply run 'PYTHONPATH=. streamlit run ui/streamlit/Home.py' in your terminal.
+For the LLM to work, you will need to create a config_private.py file. Generate an OpenRouter API key and store it
+in this file as 'OPENROUTER_API_KEY = "..."'. 
+
+The config_private.py file is included in the project's git ignore to avoid publishing the key.
